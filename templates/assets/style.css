@@ -1,3 +1,8 @@
+/* hexo-leetcode-calendar-for-butterfly — SPDX-License-Identifier: GPL-3.0-only
+ * Copyright (C) 2026 Edward Wang (modifications)
+ * Portions Copyright (c) 2022 PPLong — 源自 PPLong222/hexo-leetcode-calendar（MIT），
+ * 声明与改动见 README。 */
+
 /* ================= 深浅色主题适配 =================
    浅色/深色两套主配色（背景、正文色、5 档色阶）由模板以内联 CSS 变量的形式注入，
    见 main_panel.html 里的 --lc-bg-light / --lc-bg-dark / --lc-sub-light / --lc-sub-dark。

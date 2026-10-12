@@ -1,3 +1,7 @@
+/* hexo-leetcode-calendar-for-butterfly — SPDX-License-Identifier: GPL-3.0-only
+ * Copyright (C) 2026 Edward Wang (modifications)
+ * Portions Copyright (c) 2022 PPLong — 源自 PPLong222/hexo-leetcode-calendar（MIT），
+ * 声明与改动见 README。 */
 (function leetcodeCalendar() {
     var leetCanvas = document.getElementById('leetcode-sub-calendar');
     var leetCtx = leetCanvas.getContext('2d');

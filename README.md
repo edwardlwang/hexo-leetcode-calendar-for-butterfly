@@ -10,9 +10,10 @@ the system preference), so other themes work as well.
 Only [leetcode.cn](https://leetcode.cn) (力扣) accounts are supported — `leetcode.com` is not.
 
 > **Fork notice.** This is a maintained fork of
-> [PPLong222/hexo-leetcode-calendar](https://github.com/PPLong222/hexo-leetcode-calendar)
-> (MIT, © 2022 PPLong), which is no longer maintained and whose published version no longer works.
-> See [Changes from upstream](#changes-from-upstream) for what was fixed here.
+> [PPLong222/hexo-leetcode-calendar](https://github.com/PPLong222/hexo-leetcode-calendar),
+> which is no longer maintained and whose published version no longer works.
+> See [Changes from upstream](#changes-from-upstream) for what was fixed here, and
+> [Third-party notices](#third-party-notices) for the upstream copyright attribution.
 
 <div style="display: inline-block;">
     <a target="_blank" href="https://hexo.io/"><img height="20" src="https://img.shields.io/badge/Build-Hexo-blue?logo=Hexo&style=flat&logoColor=3686F0&color=3686F0"></a>
@@ -160,3 +161,58 @@ all. Fixed here:
 Upstream credits [hexo-douban-card](https://github.com/TankNee/hexo-douban-card) and
 [hexo-githubcalendar](https://github.com/Zfour/hexo-github-calendar) for the original ideas, and
 PPLong for writing the plugin this fork is based on.
+
+## License
+
+**GPL-3.0-only.** The full text is in [LICENSE](LICENSE), and every source file carries an
+`SPDX-License-Identifier: GPL-3.0-only` header.
+
+Upstream's notices are in [Third-party notices](#third-party-notices) below — they have to travel
+with copies of the inherited code, but they are not this project's license.
+
+GPL-3 §5(a) requires modified versions to be marked as modified and dated; the fork notice at the
+top of this README and the header in each source file do that.
+
+## Third-party notices
+
+This project is a derivative work. It is distributed as a whole under GPL-3.0-only, but code
+inherited from the project below is still covered by that project's own license, which requires
+its notices to be preserved in copies.
+
+|                  |                                                                                                                                                                            |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Project          | [PPLong222/hexo-leetcode-calendar](https://github.com/PPLong222/hexo-leetcode-calendar)                                                                                    |
+| License          | MIT — Copyright (c) 2022 PPLong                                                                                                                                            |
+| Covers here      | the ancestor of `index.js`, `render/`, `request/`, and substantially `templates/assets/loadPanel.js` and `templates/assets/style.css`                                       |
+
+MIT grants the right to sublicense, which is what makes it permissible to convey this fork as a
+whole under GPL-3.0. The MIT grant continues to apply to the upstream code itself, independently
+of the GPL-3.0 terms this fork adds.
+
+### MIT License
+
+```
+Copyright (c) 2022 PPLong
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+> **Unverified.** The text above is the standard MIT boilerplate; the copyright line is taken from
+> this repository's own wording and has **not** been checked against upstream's actual `LICENSE`
+> file. Compare against the upstream repo and correct the name/year if it differs.

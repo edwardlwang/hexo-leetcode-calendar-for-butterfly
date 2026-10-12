@@ -1,3 +1,8 @@
+/*
+ * hexo-leetcode-calendar-for-butterfly — SPDX-License-Identifier: GPL-3.0-only
+ * Copyright (C) 2026 Edward Wang
+ * 修改自 PPLong222/hexo-leetcode-calendar（MIT, © 2022 PPLong），声明与改动见 README。
+ */
 const superagent = require('superagent');
 
 // leetcode-cn.com 已迁移到 leetcode.cn，旧域名会 301
