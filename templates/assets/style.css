@@ -17,6 +17,8 @@
     /* ---- 浅色模式 ---- */
     background: var(--lc-bg-light);
     color: var(--lc-text-light);
+    /* 正文数字（28px 那几个）用 --lc-text 取色，这里把它接到当前主题那套上 */
+    --lc-text: var(--lc-text-light);
 
     /* 辅助色（浅色） */
     --lc-muted: #999a9c; /* 次要文字：数据来源、Less/More */
@@ -37,6 +39,7 @@
 html[data-theme='dark'] .leetcode-calendar-wall {
     background: var(--lc-bg-dark);
     color: var(--lc-text-dark);
+    --lc-text: var(--lc-text-dark);
 
     --lc-muted: #8b949e;
     --lc-label: #8b949e;
@@ -191,11 +194,4 @@ html[data-theme='dark'] .leetcode-calendar-wall {
     width: 100%;
     height: 26px;
     align-items: center;
-}
-
-@font-face {
-    font-family: 'iconfont';
-    /* project id 3357837 */
-    src: url('');
-    src: url('?#iefix') format('embedded-opentype'), url('//at.alicdn.com/t/font_3357837_7jn8nu1mtoc.woff2') format('woff2'), url('//at.alicdn.com/t/font_3357837_7jn8nu1mtoc.woff') format('woff'), url('//at.alicdn.com/t/font_3357837_7jn8nu1mtoc.ttf') format('truetype'), url('#iconfont') format('svg');
 }

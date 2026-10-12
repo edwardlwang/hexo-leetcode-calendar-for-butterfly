@@ -9,11 +9,9 @@ the system preference), so other themes work as well.
 
 Only [leetcode.cn](https://leetcode.cn) (力扣) accounts are supported — `leetcode.com` is not.
 
-> **Fork notice.** This is a maintained fork of
-> [PPLong222/hexo-leetcode-calendar](https://github.com/PPLong222/hexo-leetcode-calendar),
-> which is no longer maintained and whose published version no longer works.
-> See [Changes from upstream](#changes-from-upstream) for what was fixed here, and
-> [Third-party notices](#third-party-notices) for the upstream copyright attribution.
+> Maintained fork of
+> [PPLong222/hexo-leetcode-calendar](https://github.com/PPLong222/hexo-leetcode-calendar).
+> Upstream copyright is acknowledged in [Third-party notices](#third-party-notices).
 
 <div style="display: inline-block;">
     <a target="_blank" href="https://hexo.io/"><img height="20" src="https://img.shields.io/badge/Build-Hexo-blue?logo=Hexo&style=flat&logoColor=3686F0&color=3686F0"></a>
@@ -27,6 +25,13 @@ A GitHub-style contribution heatmap of the last year, with the total submission 
 range, and a per-difficulty panel (`accepted / total` for Easy, Medium, Hard). Hovering a cell shows
 that day's submission count. Everything restyles itself when the reader switches the site between
 light and dark mode.
+
+* Light/dark mode aware, including a live redraw when the reader toggles the theme.
+* Customisable palette, submission gap and logo, for both modes.
+* Same calendar in every timezone — days are bucketed by UTC, so readers outside UTC+8 are not
+  shown an empty grid.
+* Degrades gracefully: one broken tag is logged and skipped, it does not break the build.
+* Reasonably responsive — the bottom stats panel is hidden on narrow screens.
 
 ## Install
 
@@ -69,9 +74,6 @@ hexo clean && hexo g && hexo s
 leetcode.cn has per-user profile visibility settings, and the submission calendar is only served for
 accounts that have made their submissions public. If yours comes out empty, `hexo g` prints a warning
 telling you so — make the submission record visible in your LeetCode profile settings and rebuild.
-
-A single failing tag (unknown user, network error, missing username, ...) is logged and skipped;
-it no longer aborts the whole build.
 
 ## Customize
 
@@ -124,31 +126,6 @@ Only the `dark*` colour values are configurable. The greys (source line, month l
 lines, hover tooltip) live in `templates/assets/style.css` under
 `html[data-theme='dark'] .leetcode-calendar-wall` if you want to tune those too.
 
-## Changes from upstream
-
-The upstream package was last released in 2022 and its published `0.4.0` no longer builds a site at
-all. Fixed here:
-
-* **Domain migration.** `leetcode-cn.com` was renamed to `leetcode.cn`; the old host 301-redirects,
-  and superagent downgrades a redirected `POST` to a body-less `GET`, so the GraphQL call returned
-  HTTP 400. All requests now go straight to `leetcode.cn`.
-* **A failing tag no longer kills the build.** The rejected request was unhandled, which under
-  Node ≥ 15 crashes the whole `hexo g` process. Failures are now logged and that one calendar is
-  skipped.
-* **GraphQL field follow-up.** Prefers `userProfileUserQuestionProgressV2` and falls back to the
-  legacy field automatically if the server ever renames it again.
-* **Dark mode** (new): see above.
-* **Smaller fixes**: difficulty counts are matched by `difficulty` instead of array order; totals are
-  summed explicitly; weekday labels no longer inherit the last cell's fill colour; template values
-  containing `$&` no longer corrupt the output; the `stamp-param` attribute is quoted.
-
-## Features
-
-* Light/dark mode aware, including a live redraw on theme toggle.
-* Customisable palette, submission gap and logo for both modes.
-* Degrades gracefully: one broken tag does not break the build.
-* Reasonably responsive — the bottom stats panel is hidden on narrow screens.
-
 ## TODO
 
 * Support multiple calendars on the same page (currently the first one wins).
@@ -159,16 +136,12 @@ all. Fixed here:
 ## Thanks
 
 Upstream credits [hexo-douban-card](https://github.com/TankNee/hexo-douban-card) and
-[hexo-githubcalendar](https://github.com/Zfour/hexo-github-calendar) for the original ideas, and
-PPLong for writing the plugin this fork is based on.
+[hexo-githubcalendar](https://github.com/Zfour/hexo-github-calendar) for the original ideas.
 
 ## License
 
 **GPL-3.0-only.** The full text is in [LICENSE](LICENSE), and every source file carries an
 `SPDX-License-Identifier: GPL-3.0-only` header.
-
-Upstream's notices are in [Third-party notices](#third-party-notices) below — they have to travel
-with copies of the inherited code, but they are not this project's license.
 
 GPL-3 §5(a) requires modified versions to be marked as modified and dated; the fork notice at the
 top of this README and the header in each source file do that.
@@ -179,11 +152,11 @@ This project is a derivative work. It is distributed as a whole under GPL-3.0-on
 inherited from the project below is still covered by that project's own license, which requires
 its notices to be preserved in copies.
 
-|                  |                                                                                                                                                                            |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Project          | [PPLong222/hexo-leetcode-calendar](https://github.com/PPLong222/hexo-leetcode-calendar)                                                                                    |
-| License          | MIT — Copyright (c) 2022 PPLong                                                                                                                                            |
-| Covers here      | the ancestor of `index.js`, `render/`, `request/`, and substantially `templates/assets/loadPanel.js` and `templates/assets/style.css`                                       |
+|             |                                                                                                                                      |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Project     | [PPLong222/hexo-leetcode-calendar](https://github.com/PPLong222/hexo-leetcode-calendar)                                              |
+| License     | MIT — Copyright (c) 2022 PPLong                                                                                                      |
+| Covers here | the ancestor of `index.js`, `render/`, `request/`, and substantially `templates/assets/loadPanel.js` and `templates/assets/style.css` |
 
 MIT grants the right to sublicense, which is what makes it permissible to convey this fork as a
 whole under GPL-3.0. The MIT grant continues to apply to the upstream code itself, independently

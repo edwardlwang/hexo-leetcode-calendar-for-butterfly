@@ -12,7 +12,19 @@
     // 每次重绘都从它重新算，否则切换深浅色重绘时会把 ratio 又乘一遍
     var baseWidth = Number(getComputedStyle(leetCanvas).width.match(/[0-9]+/)[0]);
     var width = baseWidth;
-    const dayMillSeconds = 24 * 60 * 60 * 1000;
+    const DAY_MS = 24 * 60 * 60 * 1000;
+    // 服务端返回的时间戳是一天的起点，但不同分桶方式下它可能是 UTC 零点、也可能是别的
+    // 整点。原样按毫秒精确比对，只有读者恰好也在 UTC+8 时才对得上，其余时区会整格错开
+    // （表现出来就是整年全灰，且一声不吭）。统一吸附到最近的 UTC 零点再比，两种分桶都
+    // 对得上，顺带免疫夏令时
+    function snapToUtcDay(stampMs) {
+        return Math.round(stampMs / DAY_MS) * DAY_MS;
+    }
+    // 上面的日期一律是 UTC 零点，所以展示时也必须用 getUTC*，否则西时区会整体差一天
+    function formatDay(stampMs) {
+        var d = new Date(stampMs);
+        return d.getUTCFullYear() + '-' + (d.getUTCMonth() + 1) + '-' + d.getUTCDate();
+    }
     const maxRowSize = 7
     const maxColSize = 52
     const months = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
@@ -21,9 +33,11 @@
     // 由 themeColors() 在每次绘制时重新填，浅色/深色各一套
     var subColors = []
     const curDate = new Date();
-    const curDateConvert = new Date(curDate.getFullYear(), curDate.getMonth(), +curDate.getDate(), 8, 0, 0);
+    // 「今天」= 读者本地的日历日，取它的 UTC 零点。之后所有日期都用这个表示，
+    // 不再掺任何本地时间（原先是造一个本地 08:00 来凑 UTC，那只在 UTC+8 成立）
+    const todayStamp = Date.UTC(curDate.getFullYear(), curDate.getMonth(), curDate.getDate());
     const curWeekDay = curDate.getDay() == 0 ? 7 : curDate.getDay() + 1
-    const initDate = new Date(curDateConvert.getTime() - (maxRowSize * (maxColSize - 1) + curWeekDay - 1) * dayMillSeconds)
+    const initStamp = todayStamp - (maxRowSize * (maxColSize - 1) + curWeekDay - 1) * DAY_MS
     const userName = document.getElementsByClassName('datasource')[0].getElementsByTagName('a')[0].innerHTML.substring(1)
     // 数据挂在 canvas 的 stamp-param 上，读完就会被删掉。
     // 脚本被重复执行时（PJAX 换页、手动插入等）属性已经没了，此时直接退出，
@@ -35,7 +49,7 @@
     const objectMap = JSON.parse(stampParam)
     const map = new Map()
     for (key of Object.keys(objectMap)) {
-        map.set(key * 1000, objectMap[key])
+        map.set(snapToUtcDay(key * 1000), objectMap[key])
     }
 
     // 当前是不是深色：优先看主题打的标记，没标记就跟随系统偏好。
@@ -150,7 +164,7 @@
             for (row = 0; row < tempRow; row++) {
                 let curX = calendarLeftMargin + col * (divSize + divMargin)
                 let curY = calendarTopMargin + monthFontSize + row * (divSize + divMargin)
-                curStamp = initDate.getTime() + (col * 7 + row) * dayMillSeconds
+                let curStamp = initStamp + (col * 7 + row) * DAY_MS
                 if (data.get(curStamp) != null) {
                     leetCtx.fillStyle = subColors[Math.min(Math.floor(data.get(curStamp) / submitGap), subColors.length - 1)]
                 } else {
@@ -187,7 +201,7 @@
             toolTipsContainer = document.getElementsByClassName("leetcode-tips-container")[0];
             curCol = Math.floor((x - calendarLeftMargin) / (divMargin + divSize))
             curRow = Math.floor((y - calendarTopMargin - monthFontSize) / (divMargin + divSize))
-            selectDate = new Date(initDate.getTime() + (curCol * 7 + curRow) * dayMillSeconds)
+            let selectStamp = initStamp + (curCol * 7 + curRow) * DAY_MS
             toolTips = document.getElementById("leetcode-tips")
                 // 没必要动态加载, 后期直接在页面内预装好模块
             if (toolTips == null) {
@@ -199,10 +213,10 @@
                 toolTipsContainer.appendChild(toolTips)
             }
             let subCount = 0;
-            if (data.get(selectDate.getTime()) != null) {
-                subCount = data.get(selectDate.getTime());
+            if (data.get(selectStamp) != null) {
+                subCount = data.get(selectStamp);
             }
-            const content = selectDate.getFullYear() + "-" + (selectDate.getMonth() + 1) + "-" + selectDate.getDate() + "  " + subCount + "次提交"
+            const content = formatDay(selectStamp) + "  " + subCount + "次提交"
             const containerHeight = window.getComputedStyle(toolTipsContainer).height.match(/[0-9]+/)[0];
             const containerWidth = window.getComputedStyle(toolTipsContainer).width.match(/[0-9]+/)[0];
             toolTips.innerHTML = content
@@ -228,7 +242,7 @@
             const monthsHorizonMargin = Math.floor(0.05 * width)
             const monthMargin = (width - months.length * monthFontSize - 2.5 * monthsHorizonMargin) / (months.length - 1)
             leetCtx.font = monthFontSize + "px Arial"
-            startMonth = initDate.getMonth()
+            startMonth = new Date(initStamp).getUTCMonth()
 
             for (i = 0; i < months.length + 1; i++) {
                 curX = 1.5 * monthsHorizonMargin + i * (monthMargin + monthFontSize)
@@ -239,14 +253,16 @@
 
         function changeYearGapText() {
             dom = document.getElementsByClassName("leetcode-bottom-text")[1]
-            dom.innerHTML = initDate.getFullYear() + "-" + (initDate.getMonth() + 1) + "-" + initDate.getDate() +
-                " - " + curDate.getFullYear() + "-" + (curDate.getMonth() + 1) + "-" + curDate.getDate()
+            dom.innerHTML = formatDay(initStamp) + " - " + formatDay(todayStamp)
         }
 
         function calcAnnualSubCount(data) {
             sum = 0
             for (let [key, value] of data.entries()) {
-                if (parseInt(key) > initDate.getTime()) {
+                // 区间要和画出来的那一年严格一致：下界用 >= 把第一天（initStamp 那格）
+                // 算进去，否则和上面显示的区间标签对不上；上界封在今天，别把画不出来的
+                // 未来日期也累加进去
+                if (key >= initStamp && key <= todayStamp) {
                     sum += value
                 }
             }
