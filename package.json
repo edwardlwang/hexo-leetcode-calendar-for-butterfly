@@ -1,6 +1,6 @@
 {
   "name": "hexo-leetcode-calendar-for-butterfly",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "description": "A Hexo tag plugin that renders a leetcode.cn submission calendar with automatic light/dark mode, built for the Butterfly theme",
   "main": "index.js",
   "scripts": {
