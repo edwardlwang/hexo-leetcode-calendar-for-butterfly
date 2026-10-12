@@ -1,0 +1,196 @@
+/* ================= 深浅色主题适配 =================
+   浅色/深色两套主配色（背景、正文色、5 档色阶）由模板以内联 CSS 变量的形式注入，
+   见 main_panel.html 里的 --lc-bg-light / --lc-bg-dark / --lc-sub-light / --lc-sub-dark。
+   这里负责三件事：
+     1. 按当前主题从两套里挑一套用（背景、文字色）；
+     2. 补上不开放给用户配置的辅助色（次要文字、分隔线、悬浮提示等）；
+     3. 画在 canvas 上的格子颜色 CSS 管不到，由 loadPanel.js 读同一批变量后绘制。
+   深色判定沿用主题圈的通行做法：<html data-theme="dark">（Butterfly、NexT 等都是这么标的），
+   没有标记时回退到系统偏好 prefers-color-scheme。改主题只要改这里的深色块即可。 */
+
+.leetcode-calendar-wall {
+    /* ---- 浅色模式 ---- */
+    background: var(--lc-bg-light);
+    color: var(--lc-text-light);
+
+    /* 辅助色（浅色） */
+    --lc-muted: #999a9c; /* 次要文字：数据来源、Less/More */
+    --lc-label: #626b72; /* 说明文字 */
+    --lc-subtle: #535160; /* “/ 总题数” */
+    --lc-line: #a3a1a1; /* 分隔线 */
+    --lc-tip-bg: rgba(0, 0, 0, 0.8); /* 悬浮提示背景 */
+    --lc-tip-text: #fff; /* 悬浮提示文字 */
+    --lc-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+
+    padding: 10px;
+    margin-top: 30px;
+    border-radius: 10px;
+    box-shadow: var(--lc-shadow);
+}
+
+/* ---- 深色模式：换用深色一套，并把辅助色提亮到深底上能看清 ---- */
+html[data-theme='dark'] .leetcode-calendar-wall {
+    background: var(--lc-bg-dark);
+    color: var(--lc-text-dark);
+
+    --lc-muted: #8b949e;
+    --lc-label: #8b949e;
+    --lc-subtle: #8b949e;
+    --lc-line: #30363d;
+    --lc-tip-bg: rgba(110, 118, 129, 0.5);
+    --lc-tip-text: #f0f6fc;
+    /* 深色下重投影会糊成一团，改成描边 */
+    --lc-shadow: 0 0 0 1px #30363d;
+}
+
+.panel {
+    margin-top: 60px;
+    border-radius: 10px;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+}
+
+.leetcode-tips-container {
+    width: 180px;
+    height: 40px;
+    text-align: center;
+    background: var(--lc-tip-bg);
+    border-radius: 6px;
+    position: fixed;
+    display: none;
+    z-index: 999;
+}
+
+/* 悬浮提示里的文字，样式从 JS 里挪过来，方便跟着主题变 */
+.leetcode-tips {
+    color: var(--lc-tip-text);
+    line-height: 40px;
+    margin: 0;
+}
+
+.datasource {
+    color: var(--lc-muted);
+    font-size: 12px;
+    margin-left: 20px;
+    flex: 1;
+}
+
+.leetcode-bottom-part {
+    display: none;
+    margin-top: 15px;
+}
+
+.leetcode-annual-sub {
+    flex: 1;
+    padding: 10px;
+    border-top: 1px solid var(--lc-line);
+    border-right: 1px solid var(--lc-line);
+    text-align: center;
+    padding: 10px;
+}
+
+.leetcode-bottom-text {
+    color: var(--lc-label);
+    font-size: 12px;
+}
+
+.leetcode-type {
+    text-align: center;
+    border-top: 1px solid var(--lc-line);
+    height: auto;
+    flex: 2;
+    padding: 4px 10px 0px 10px;
+}
+
+.leetcode-type-frame {
+    display: flex;
+    margin-top: 2px;
+}
+
+.leetcode-annul-sub-text {
+    font-size: 28px;
+    color: var(--lc-text);
+}
+
+.leetcode-type-simple {
+    flex: 1
+}
+
+.leetcode-type-medium {
+    flex: 1
+}
+
+.leetcode-type-hard {
+    flex: 1
+}
+
+.leetcode-bottom-text {}
+
+.leetcode-sub-count-text {
+    font-size: 28px;
+    color: var(--lc-text);
+}
+
+.leetcode-total-count-text {
+    font-size: 14px;
+    color: var(--lc-subtle);
+}
+
+.leetcode-type-text {
+    font-size: 18px;
+    font-family: sans-serif;
+}
+
+.leetcode-text-simple {
+    color: #64d3bebf
+}
+
+.leetcode-text-medium {
+    color: #d9a73be0
+}
+
+.leetcode-text-hard {
+    color: #ef7053c2
+}
+
+.colorpanel {
+    flex: 1;
+    display: inline-block;
+    font-size: 14px;
+    color: var(--lc-muted);
+    margin-right: 20px;
+    text-align: right;
+}
+
+.datapanel {
+    float: left;
+}
+
+.color-array li {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.color-array {
+    list-style: none;
+    display: inline-block;
+    position: relative;
+    padding: 0;
+    margin: 0 5px;
+}
+
+.leetcode-contri-footer {
+    display: flex;
+    width: 100%;
+    height: 26px;
+    align-items: center;
+}
+
+@font-face {
+    font-family: 'iconfont';
+    /* project id 3357837 */
+    src: url('');
+    src: url('?#iefix') format('embedded-opentype'), url('//at.alicdn.com/t/font_3357837_7jn8nu1mtoc.woff2') format('woff2'), url('//at.alicdn.com/t/font_3357837_7jn8nu1mtoc.woff') format('woff'), url('//at.alicdn.com/t/font_3357837_7jn8nu1mtoc.ttf') format('truetype'), url('#iconfont') format('svg');
+}
